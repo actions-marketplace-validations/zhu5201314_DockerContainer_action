@@ -1,7 +1,7 @@
 name: push docker image to dockerhub
 on: 
- push:
-
+ repository_dispatch:
+   
 jobs: 
   build: 
     env: 
@@ -9,20 +9,21 @@ jobs:
     runs-on: ubuntu-latest 
     steps: 
     - uses: actions/checkout@v2
+    
+    - name: Build and tag image 
+      run: docker build -t "yanjingzhu/dockercontainer_action:$TAG" -f Dockerfile .
+    - name: run
+      run: |
+         docker run yanjingzhu/dockercontainer_action:$TAG
+    - name: Docker login 
+      run: docker login -u yanjingzhu -p $dockerhub_pw 
+      env: 
+        dockerhub_pw: ${{secrets.DHPW}} 
+    - name: Publish to GPR 
+      run: docker push "yanjingzhu/dockercontainer_action:$TAG"
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v2
       env:
         DOCKERHUB_USERNAME: yanjingzhu
         DOCKERHUB_PASSWORD: ${{ secrets.DHPW }}
         DOCKERHUB_REPOSITORY: yanjingzhu/dockercontainer_action
-#     - name: Build and tag image 
-#       run: docker build -t "yanjingzhu/dockercontainer_action:$TAG" -f Dockerfile .
-#     - name: run
-#       run: |
-#          docker run yanjingzhu/dockercontainer_action:$TAG
-#     - name: Docker login 
-#       run: docker login -u yanjingzhu -p $dockerhub_pw 
-#       env: 
-#         dockerhub_pw: ${{secrets.DHPW}} 
-#     - name: Publish to GPR 
-#       run: docker push "yanjingzhu/dockercontainer_action:$TAG"
