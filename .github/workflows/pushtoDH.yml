@@ -1,6 +1,8 @@
 name: push docker image to dockerhub
 on: 
- repository_dispatch:
+ push: 
+  paths: 
+   - '.github/workflows/pushtoDH.yml'
    
 jobs: 
   build: 
